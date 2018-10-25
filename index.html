@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script>
+	  let container = [];
+      window.addEventListener('DOMContentLoaded',async () => {
+      	var elements = [];
+      	document.querySelectorAll('svg.embedded').forEach(svg=>elements.push(svg));
+
+      	await Promise.all(elements.map(async svg => {
+        	const response = await fetch(svg.dataset.url);
+        	const text = await response.text();
+        	svg.innerHTML = text.replace(/<\/?svg.*?>/,'');
+      	}));
+
+		document.querySelectorAll('a').forEach(a=>{
+  			const href = a.getAttributeNS('http://www.w3.org/1999/xlink','href');
+  			a.setAttributeNS('http://www.w3.org/1999/xlink','href', '#'+href);
+  			var val = href.match(/\/([\w\-]+?).ly:(\d+):(\d+):/);
+  			a.onclick=()=>{
+  				const path = a.querySelector('path');
+  				val.clear = () => path.setAttribute('fill', path.getAttribute('fill')==='red'?'black':'red');
+    			container.push(val);
+  				path.setAttribute('fill', path.getAttribute('fill')==='red'?'black':'red');
+  			};
+    	});
+      });
+      function bfunc() {
+        container.map(data => {
+        	data.clear();
+        	data=data.slice(1);
+        	console.log(data);
+        	fetch("./ly/"+data[0]+".ly").then(cont => {
+        		return cont.text();
+        	}).then(t => {
+        		console.log(t);
+        	});
+        });
+        container = [];
+      }
+    </script>
+</head>
+<body>
+	<svg class="embedded" data-url="./svg/msc-10.svg" viewBox="0 0 200 50"></svg>
+	<button onclick="bfunc()"> button </button>
+</body>
+</html>

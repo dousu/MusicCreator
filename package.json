@@ -1,7 +1,7 @@
 {
   "name": "musiccreator",
   "version": "1.0.0",
-  "description": "",
+  "description": "for experiment",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,13 +10,18 @@
     "type": "git",
     "url": "git+https://github.com/dousu/MusicCreator.git"
   },
-  "author": "",
+  "author": "dousu",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/dousu/MusicCreator/issues"
   },
   "homepage": "https://github.com/dousu/MusicCreator#readme",
   "dependencies": {
-    "ejs": "^2.6.1"
-  }
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "svg.js": "^2.6.6"
+  },
+  "keywords": [
+    "ilm"
+  ]
 }
