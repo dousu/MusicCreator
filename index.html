@@ -2,102 +2,65 @@
 <html>
 <head>
 	<title></title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/abcjs/3.1.1/abcjs_editor_midi-min.js"></script>
 	<script>
-	  let phrase = [];
-	  let container = [];
-      window.addEventListener('DOMContentLoaded',async () => {
-      	var elements = [];
-      	document.querySelectorAll('svg.embedded').forEach(svg=>elements.push(svg));
+		fetch("./abc/msc-10.abc").then(response =>{
+			return response.text();
+		}).then(data => {
+			ABCJS.renderAbc('notation', data);
+		});
+		function selectionCallback(abcelem) {
+			var note = {};
+			for (var key in abcelem) {
+				if (abcelem.hasOwnProperty(key) && key !== "abselem")
+					note[key] = abcelem[key];
+			}
+			console.log(abcelem);
+			var el = document.getElementById("selection");
+			el.innerHTML = "<b>selectionCallback parameter:</b><br>" + JSON.stringify(note);
+		}
 
-      	await Promise.all(elements.map(async svg => {
-        	const response = await fetch(svg.dataset.url);
-        	const text = await response.text();
-        	svg.innerHTML = text.replace(/<\/?svg.*?>/,'');
-      	}));
+		function initEditor() {
+			new ABCJS.Editor("abc", { paper_id: "paper0",
+				generate_midi: true,
+				midi_id:"midi",
+				midi_download_id: "midi-download",
+				generate_warnings: true,
+				warnings_id:"warnings",
+				abcjsParams: {
+					generateDownload: true,
+					clickListener: selectionCallback
+				}
+			});
+		}
 
-		document.querySelectorAll('a').forEach(a=>{
-  			const href = a.getAttributeNS('http://www.w3.org/1999/xlink','href');
-  			a.setAttributeNS('http://www.w3.org/1999/xlink','href', '#'+href);
-  			var val = href.match(/\/([\w\-]+?).ly:(\d+):(\d+):/);
-  			a.onclick=()=>{
-  				const path = a.querySelector('path');
-  				val.clear = () => path.setAttribute('fill', path.getAttribute('fill')==='red'?'black':'red');
-    			container.push(val);
-  				path.setAttribute('fill', 'red');
-  			};
-    	});
-      });
-      async function bfunc() {
-      	phrase = [];
-      	var old = 0;
-      	await container.sort((a,b) => {
-      		if(a[2] !== b[2]){
-      			return a[2] - b[2];
-      		}
-      		if(a[3] !== b[3]){
-      			return a[3] - b[3];
-      		}
-      		return 0;
-      	});
-      	console.log(container);
-      	await containerLoop();
-      	console.log(phrase);
-      	container = [];
-      }
-      async function containerLoop () {
-      	container.map(x => x.clear());
-      	let i = 0;
-      	for(; i < container.length; i++){
-      		let data = container[i].slice(1);
-      		console.log(data);
-      		let check = true;
-      		const pos = i;
-      		await fetch("./ly/"+data[0]+".ly").then(cont => {
-        		return cont.text();
-        	}).then(t => {
-        		if(pos !== 0 ){
-        			if(old !== data){
-        				var arr = t.split(/\r\n|\r|\n/);
-        				const col1 = arr[old[1]-1];
-        				let str = "";
-        				if(old[1] !== data[1]){
-        					if(old[1] + 1 === data[1]){
-	        					const col2 = arr[data[1]-1];
-    	    					str = col1.slice(old[2]);
-        						const tmp = col2.slice(0, data[2]);
-        						str = str + ' ' + tmp.trimStart();
-        					}else{
-        						check = false;
-        					}
-        				}else{
-        					str = col1.slice(old[2], data[2]);
-        				}
-        				console.log(str);
-        				if(check && str.search(/\s\S+\s/) !== -1){
-							check = false;
-        				}
-        			}else{
-        				check = false;
-        			}
-        		}
-        		if(check){
-        			var arr = t.split(/\r\n|\r|\n/);
-        			const col = arr[data[1]-1];
-        			const rem = col.slice(data[2]); 
-        			phrase.push(rem.slice(0, rem.search(/\s/)));
-        		}
-        	});
-        	if(!check){
-        		phrase = [];
-        		break;
-        	}
-        	old = data;
-      	}
-      }
+		window.addEventListener("load", initEditor, false);
     </script>
 </head>
 <body>
-	<svg class="embedded" data-url="./svg/msc-10.svg" viewBox="0 0 200 50"></svg>
-	<button onclick="bfunc()"> button </button>
+<form name = "form1">
+<textarea name="abc" id="abc" cols="80" rows="15">X: 1
+T: Cooley's
+M: 4/4
+L: 1/8
+R: reel
+K: Emin
+|:D2|EB{c}BA B2 EB|~B2 AB dBAG|FDAD BDAD|FDAD dAFD|
+EBBA B2 EB|B2 AB defg|afe^c dBAF|DEFD E2:|
+|:gf|eB B2 efge|eB B2 gedB|A2 FA DAFA|A2 FA defg|
+eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|
+</textarea>
+</form>
+	<div id="notation"></div>
+	<button onclick="buttonFunc()"> button </button>
+	<div id="midi"></div>
+	<div id="midi-download"></div>
+	<div id="warnings"></div>
+	<div id="paper0" class="paper"></div>
+	<div id="selection"></div>
 </body>
+<script>
+	const textdata = document.form1.abc;
+	console.log(textdata);
+</script>
 </html>

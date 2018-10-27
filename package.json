@@ -23,5 +23,8 @@
   },
   "keywords": [
     "ilm"
-  ]
+  ],
+  "devDependencies": {
+    "font-awesome": "^4.7.0"
+  }
 }
