@@ -3,6 +3,7 @@
 <head>
 	<title></title>
 	<script>
+	  let phrase = [];
 	  let container = [];
       window.addEventListener('DOMContentLoaded',async () => {
       	var elements = [];
@@ -22,22 +23,76 @@
   				const path = a.querySelector('path');
   				val.clear = () => path.setAttribute('fill', path.getAttribute('fill')==='red'?'black':'red');
     			container.push(val);
-  				path.setAttribute('fill', path.getAttribute('fill')==='red'?'black':'red');
+  				path.setAttribute('fill', 'red');
   			};
     	});
       });
-      function bfunc() {
-        container.map(data => {
-        	data.clear();
-        	data=data.slice(1);
-        	console.log(data);
-        	fetch("./ly/"+data[0]+".ly").then(cont => {
+      async function bfunc() {
+      	phrase = [];
+      	var old = 0;
+      	await container.sort((a,b) => {
+      		if(a[2] !== b[2]){
+      			return a[2] - b[2];
+      		}
+      		if(a[3] !== b[3]){
+      			return a[3] - b[3];
+      		}
+      		return 0;
+      	});
+      	console.log(container);
+      	await containerLoop();
+      	console.log(phrase);
+      	container = [];
+      }
+      async function containerLoop () {
+      	container.map(x => x.clear());
+      	let i = 0;
+      	for(; i < container.length; i++){
+      		let data = container[i].slice(1);
+      		console.log(data);
+      		let check = true;
+      		const pos = i;
+      		await fetch("./ly/"+data[0]+".ly").then(cont => {
         		return cont.text();
         	}).then(t => {
-        		console.log(t);
+        		if(pos !== 0 ){
+        			if(old !== data){
+        				var arr = t.split(/\r\n|\r|\n/);
+        				const col1 = arr[old[1]-1];
+        				let str = "";
+        				if(old[1] !== data[1]){
+        					if(old[1] + 1 === data[1]){
+	        					const col2 = arr[data[1]-1];
+    	    					str = col1.slice(old[2]);
+        						const tmp = col2.slice(0, data[2]);
+        						str = str + ' ' + tmp.trimStart();
+        					}else{
+        						check = false;
+        					}
+        				}else{
+        					str = col1.slice(old[2], data[2]);
+        				}
+        				console.log(str);
+        				if(check && str.search(/\s\S+\s/) !== -1){
+							check = false;
+        				}
+        			}else{
+        				check = false;
+        			}
+        		}
+        		if(check){
+        			var arr = t.split(/\r\n|\r|\n/);
+        			const col = arr[data[1]-1];
+        			const rem = col.slice(data[2]); 
+        			phrase.push(rem.slice(0, rem.search(/\s/)));
+        		}
         	});
-        });
-        container = [];
+        	if(!check){
+        		phrase = [];
+        		break;
+        	}
+        	old = data;
+      	}
       }
     </script>
 </head>
