@@ -1,66 +1,12 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title></title>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/abcjs/3.1.1/abcjs_editor_midi-min.js"></script>
-	<script>
-		fetch("./abc/msc-10.abc").then(response =>{
-			return response.text();
-		}).then(data => {
-			ABCJS.renderAbc('notation', data);
-		});
-		function selectionCallback(abcelem) {
-			var note = {};
-			for (var key in abcelem) {
-				if (abcelem.hasOwnProperty(key) && key !== "abselem")
-					note[key] = abcelem[key];
-			}
-			console.log(abcelem);
-			var el = document.getElementById("selection");
-			el.innerHTML = "<b>selectionCallback parameter:</b><br>" + JSON.stringify(note);
-		}
-
-		function initEditor() {
-			new ABCJS.Editor("abc", { paper_id: "paper0",
-				generate_midi: true,
-				midi_id:"midi",
-				midi_download_id: "midi-download",
-				generate_warnings: true,
-				warnings_id:"warnings",
-				abcjsParams: {
-					generateDownload: true,
-					clickListener: selectionCallback
-				}
-			});
-		}
-
-		window.addEventListener("load", initEditor, false);
-    </script>
-</head>
-<body>
-<form name = "form1">
-<textarea name="abc" id="abc" cols="80" rows="15">X: 1
-T: Cooley's
-M: 4/4
-L: 1/8
-R: reel
-K: Emin
-|:D2|EB{c}BA B2 EB|~B2 AB dBAG|FDAD BDAD|FDAD dAFD|
-EBBA B2 EB|B2 AB defg|afe^c dBAF|DEFD E2:|
-|:gf|eB B2 efge|eB B2 gedB|A2 FA DAFA|A2 FA defg|
-eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|
-</textarea>
-</form>
-	<div id="notation"></div>
-	<button onclick="buttonFunc()"> button </button>
-	<div id="midi"></div>
-	<div id="midi-download"></div>
-	<div id="warnings"></div>
-	<div id="paper0" class="paper"></div>
-	<div id="selection"></div>
-</body>
-<script>
-	const textdata = document.form1.abc;
-	console.log(textdata);
-</script>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>musiccreator</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
 </html>
