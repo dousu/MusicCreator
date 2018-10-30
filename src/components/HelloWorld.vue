@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <textarea id="abc-source"></textarea>
-    <textarea id="abc-phrase" v-model="tune"></textarea>
+    <textarea id="abc-phrase"></textarea>
     <textarea id="abc-creation"></textarea>
     
     <div id="play-info">
@@ -75,6 +75,7 @@ export default {
       });
     this.abcdata = this.allrefdata[this.refloc];
 
+    document.getElementById("abc-phrase").value = this.tune;
     new abcjs.Editor("abc-phrase", {
       paper_id: "paper-phrase",
       generate_midi: true,
@@ -395,5 +396,15 @@ export default {
 .modifier {
   height: 20px;
   width: 80px;
+}
+
+#creation {
+  margin: 20px;
+}
+#editing {
+  margin: 10px;
+}
+#abc-ref {
+  margin: 20px;
 }
 </style>
