@@ -1,0 +1,11 @@
+X:207
+T:Title
+L:1/8
+Q:1/4=120
+M:3/4
+I:linebreak $
+K:E
+V:1 treble nm="MusicXML Part"
+V:1
+ z2 z2 z B | !>!e3 !>!e !>!e!>!e | !>!d3 !>!d !>!d!>!f |{/!>!f} c6- | c(c d{/f}e dc | %5
+"^poco allarg." (bg({fg)} fe)) cG | (G/B/e/g/) !fermata!b2!>(!"^a tempo"!>)! .f.g | e2 z2 z2 |] %8

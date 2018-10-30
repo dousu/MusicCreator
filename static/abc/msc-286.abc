@@ -1,0 +1,10 @@
+X:210
+T:Title
+L:1/16
+Q:1/4=120
+M:3/8
+I:linebreak $
+K:C
+V:1 treble nm="MusicXML Part"
+V:1
+ (ec!p! | .G2).G2(ec | .G2).G2(ec | .B2).f2.f2 | f4 (fd | Bagfed | cBAGAB | cGedcd | c4) z2 |] %9
