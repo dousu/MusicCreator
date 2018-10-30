@@ -5,7 +5,5 @@ Q:1/4=120
 M:3/4
 I:linebreak $
 K:Bb
-V:1 treble nm="MusicXML Part"
-V:1
 !mf! (b3 f gd | f4 B2) |!<(! (B2 d2 a2!<)! |!>(! g4 f2)!>)! | (c'3 d' e'b) | (a3 b c'g) | %6
  (fg af cd |!>(! B6-) |!>)! B2 z2 z2 |] %9

@@ -5,7 +5,5 @@ Q:1/4=96
 M:6/8
 I:linebreak $
 K:C
-V:1 treble nm="MusicXML Part"
-V:1
  G | (.c.B.c .d.e.f | .g.a.b .c'.d'.e') | .f'2 .e' .f'2 .e' |$ .d'2 z z2 D | (.G.^F.G .A.B.c | %6
  .d.e.f .g.a.b) | .c'2 .d' .c'2 .d' |$ .c'2 z z3 |] %9

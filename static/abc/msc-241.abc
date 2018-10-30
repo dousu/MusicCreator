@@ -5,7 +5,5 @@ Q:1/4=96
 M:4/4
 I:linebreak $
 K:Bb
-V:1 treble nm="MusicXML Part"
-V:1
 !p! D2 | .F2 .D2 z2 D2 | .F2 .D2 z2"_cresc." .D2 | .F2 .B2 .d2 .f2 |$ b6 (a/b/c'/b/ | agfe dcgf | %6
  e2 d2) z2"_cresc." (=A/B/c/B/ |$ _AGFE DCE=A,) |!f! .B, z z2 z4 |] %9

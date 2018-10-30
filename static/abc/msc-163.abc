@@ -5,7 +5,5 @@ Q:1/4=96
 M:6/8
 I:linebreak $
 K:D
-V:1 treble nm="MusicXML Part"
-V:1
 !f! A | (DFA dfa) | (geg fdA) | (DFA dfa) |$ (gec d2)!mf! f/g/ | (afe ^dba) | (ge=d cag) | %7
  (fA=c Bgf) |$ ebd (d^c)A |!f! D z z z3 |] %10

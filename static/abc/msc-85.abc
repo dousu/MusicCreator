@@ -5,8 +5,6 @@ Q:1/4=96
 M:5/4
 I:linebreak $
 K:Gmin
-V:1 treble nm="MusicXML Part"
-V:1
  !tenuto!G !tenuto!F !tenuto!B (!tenuto!c/f/) !tenuto!d | %1
 [M:6/4] (!tenuto!c/f/) !tenuto!d !tenuto!B !tenuto!c !tenuto!G !tenuto!F |[M:5/4] G F B (c/f/ d) | %3
 [M:6/4] (c/f/ d) B c G F |$[M:5/4] !tenuto!F !tenuto!G !tenuto!D (!tenuto!F/G/ !tenuto!C) | %5
