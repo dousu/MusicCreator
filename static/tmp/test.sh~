@@ -1,6 +1,0 @@
-#!/bin/sh
-
-for file in *.abc
-do
-  echo "grep -v '^\s*$' $file >../abc/$file"
-done

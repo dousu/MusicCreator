@@ -16,30 +16,45 @@
     </div>
     
     <div id="refer-abc">
-      <div id="midi"></div>
-      <div id="midi-download"></div>
       <div class="container">
         <div id="paper"></div>
       </div>
+      <button v-on:click="leftbutton" class="direction">
+        <font-awesome-icon icon="chevron-left" />
+      </button>
+      <button v-on:click="rightbutton" class="direction">
+        <font-awesome-icon icon="chevron-right" />
+      </button>
+      <div id="midi"></div>
+      <div id="midi-download"></div>
     </div>
 
     <div id=editing>
-      <div id="midi-phrase"></div>
-      <div id="midi-download-phrase"></div>
       <div class="container">
         <div id="paper-phrase"></div>
       </div>
-      <button v-on:click="clear_phrase"> clear </button>
-      <button v-on:click="regist_phrase"> add </button>
+      <button v-on:click="clear_phrase" class="modifier">
+        <font-awesome-icon icon="minus" /> clear
+      </button>
+      <button v-on:click="regist_phrase" class="modifier">
+        <font-awesome-icon icon="plus" /> add
+      </button>
+      <div id="midi-phrase"></div>
+      <div id="midi-download-phrase"></div>
     </div>
 
     <div id="creatation">
-      <div id="midi-creation"></div>
-      <div id="midi-download-creation"></div>
       <div class="container">
         <div id="paper-creation"></div>
       </div>
-      <button v-on:click="clear_creation"> clear </button>
+      <button v-on:click="clear_creation" class="modifier">
+        <font-awesome-icon icon="minus" /> clear
+      </button>
+      <button v-on:click="undo_creation" class="modifier">
+        <font-awesome-icon icon="undo" /> undo
+      </button>
+      <div id="midi-creation"></div>
+      <div id="midi-download-creation"></div>
     </div>
   </div>
 </template>
@@ -51,37 +66,21 @@ import abcjs from "abcjs/midi";
 
 export default {
   mounted: async function() {
-    let abcdata = "";
-    await fetch("./static/abc/msc-142.abc")
+    await fetch("./static/index.json")
       .then(response => {
-        return response.text();
+        return response.json();
       })
-      .then(textdata => {
-        abcdata = textdata;
+      .then(jsondata => {
+        this.allrefdata = jsondata;
       });
-    document.getElementById("abc-source").value = abcdata;
-    new abcjs.Editor("abc-source", {
-      paper_id: "paper",
-      generate_midi: true,
-      midi_id: "midi",
-      midi_download_id: "midi-download",
-      abcjsParams: {
-        staffwidth: 700,
-        generateDownload: true,
-        clickListener: this.selectionCallback,
-        midiListener: this.listener,
-        animate: {
-          listener: this.animate
-        }
-      }
-    });
+    this.abcdata = this.allrefdata[this.refloc];
+
     new abcjs.Editor("abc-phrase", {
       paper_id: "paper-phrase",
       generate_midi: true,
       midi_id: "midi-phrase",
       midi_download_id: "midi-download-phrase",
       abcjsParams: {
-        staffwidth: 700,
         generateDownload: true,
         midiListener: this.listener,
         animate: {
@@ -93,10 +92,32 @@ export default {
   name: "hello",
   data() {
     return {
+      abcdata: "",
       progress: {},
       currentAbcFragment: "(none)",
-      tune: "X:1\nT: Editing Phrase\nM: 4/4\nL: 1/8\nQ: 100\nK: C\n"
+      tune: "X:1\nT: Editing Phrase\nM: 4/4\nL: 1/8\nQ: 100\nK: C\n",
+      allrefdata: [],
+      refloc: 0
     };
+  },
+  watch: {
+    abcdata() {
+      document.getElementById("abc-source").value = this.abcdata;
+      new abcjs.Editor("abc-source", {
+        paper_id: "paper",
+        generate_midi: true,
+        midi_id: "midi",
+        midi_download_id: "midi-download",
+        abcjsParams: {
+          generateDownload: true,
+          clickListener: this.selectionCallback,
+          midiListener: this.listener,
+          animate: {
+            listener: this.animate
+          }
+        }
+      });
+    }
   },
   methods: {
     listener(midiControl, progress) {
@@ -144,7 +165,6 @@ export default {
         midi_id: "midi-phrase",
         midi_download_id: "midi-download-phrase",
         abcjsParams: {
-          staffwidth: 500,
           generateDownload: true,
           midiListener: this.listener,
           animate: {
@@ -167,19 +187,21 @@ export default {
       res.set("Q", setting(tempo_slice));
       const chord_slice = data_slice.slice(data_slice.lastIndexOf("K:"));
       res.set("K", setting(chord_slice));
+      const title_slice = data_slice.slice(data_slice.lastIndexOf("T:"));
+      res.set("T", setting(title_slice));
       return res;
     },
     phrase_set_info(targ, dest) {
       const str = document.getElementById("abc-phrase").value;
       if (str.lastIndexOf("\n") !== str.length - 1) {
         for (var [key, val] of targ) {
-          if (val !== dest.get(key))
+          if (key !== "T" && val !== dest.get(key))
             document.getElementById("abc-phrase").value +=
               "[" + targ.get(key) + "]";
         }
       } else {
         for (var [key, val] of targ) {
-          if (val !== dest.get(key))
+          if (key !== "T" && val !== dest.get(key))
             document.getElementById(
               "abc-phrase"
             ).value = document
@@ -196,7 +218,6 @@ export default {
         midi_id: "midi-phrase",
         midi_download_id: "midi-download-phrase",
         abcjsParams: {
-          staffwidth: 700,
           generateDownload: true,
           midiListener: this.listener,
           animate: {
@@ -213,7 +234,6 @@ export default {
         midi_id: "midi-creation",
         midi_download_id: "midi-download-creation",
         abcjsParams: {
-          staffwidth: 700,
           generateDownload: true,
           midiListener: this.listener,
           animate: {
@@ -231,7 +251,6 @@ export default {
         midi_id: "midi-creation",
         midi_download_id: "midi-download-creation",
         abcjsParams: {
-          staffwidth: 700,
           generateDownload: true,
           midiListener: this.listener,
           animate: {
@@ -240,22 +259,37 @@ export default {
         }
       });
     },
+    undo_creation() {},
     async concatenation() {
       const phrase_data = document.getElementById("abc-phrase").value;
       const creation_data = document.getElementById("abc-creation").value;
-      if (creation_data === "")
-        document.getElementById("abc-creation").value = phrase_data;
-      else {
-        const phrase_info = await this.get_info(
-          phrase_data,
-          phrase_data.indexOf("[")
-        );
-        const creation_info = await this.get_info(
-          creation_data,
+      const phrase_info = await this.get_info(
+        phrase_data,
+        phrase_data.indexOf("[")
+      );
+      const creation_info = await this.get_info(
+        creation_data,
+        creation_data.length
+      );
+      console.log(creation_data);
+      console.log(
+        creation_data.lastIndexOf(creation_info.get("K")) +
+          creation_info.get("K").length +
+          1
+      );
+      console.log(creation_data.length);
+      if (
+        creation_data === "" ||
+        creation_data.lastIndexOf(creation_info.get("K")) +
+          creation_info.get("K").length +
+          1 ===
           creation_data.length
+      ) {
+        document.getElementById("abc-creation").value = phrase_data.replace(
+          phrase_info.get("T"),
+          "T: Music"
         );
-        console.log(phrase_info);
-        console.log(creation_info);
+      } else {
         await this.creation_set_info(phrase_info, creation_info);
         document.getElementById("abc-creation").value += phrase_data.slice(
           phrase_data.indexOf(phrase_info.get("K")) +
@@ -266,10 +300,26 @@ export default {
     },
     creation_set_info(targ, dest) {
       for (const [key, val] of targ) {
-        if (val !== dest.get(key))
+        if (key !== "T" && val !== dest.get(key))
           document.getElementById("abc-creation").value +=
             "[" + targ.get(key) + "]";
       }
+    },
+    leftbutton() {
+      if (this.refloc === 0) {
+        this.refloc = this.allrefdata.length - 1;
+      } else {
+        this.refloc--;
+      }
+      this.abcdata = this.allrefdata[this.refloc];
+    },
+    rightbutton() {
+      if (this.refloc === this.allrefdata.length - 1) {
+        this.refloc = 0;
+      } else {
+        this.refloc++;
+      }
+      this.abcdata = this.allrefdata[this.refloc];
     }
   }
 };
@@ -294,7 +344,7 @@ export default {
 }
 .container {
   border: solid 1px #000000;
-  width: 1000px;
+  width: 900px;
   height: 300px;
   overflow: auto;
   box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
@@ -335,5 +385,15 @@ export default {
 
 .label {
   font-weight: bold;
+}
+
+.direction {
+  height: 50px;
+  width: 50px;
+}
+
+.modifier {
+  height: 20px;
+  width: 80px;
 }
 </style>

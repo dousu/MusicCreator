@@ -3,10 +3,10 @@
 import Vue from 'vue'
 import App from './App'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCoffee } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faChevronRight, faMinus, faUndo, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faCoffee)
+library.add(faPlus, faMinus, faUndo, faChevronRight, faChevronLeft)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
