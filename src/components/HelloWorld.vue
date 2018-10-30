@@ -14,21 +14,15 @@
     </div>
     <div id="midi"></div>
     <div id="midi-download"></div>
-    <div id="container">
     <div id="paper"></div>
-    </div>
     <div id="midi-phrase"></div>
     <div id="midi-download-phrase"></div>
-    <div id="container">
     <div id="paper-phrase"></div>
-    </div>
     <button v-on:click="clear_phrase"> clear </button>
     <button v-on:click="regist_phrase"> add </button>
     <div id="midi-creation"></div>
     <div id="midi-download-creation"></div>
-    <div id="container">
     <div id="paper-creation"></div>
-    </div>
     <button v-on:click="clear_creation"> clear </button>
   </div>
 </template>
@@ -50,12 +44,11 @@ export default {
       });
     document.getElementById("abc-source").value = abcdata;
     new abcjs.Editor("abc-source", {
-      paper_id: "paper",
+      canvas_id: "paper",
       generate_midi: true,
       midi_id: "midi",
       midi_download_id: "midi-download",
       abcjsParams: {
-        staffwidth: 700,
         generateDownload: true,
         clickListener: this.selectionCallback,
         midiListener: this.listener,
@@ -65,12 +58,11 @@ export default {
       }
     });
     new abcjs.Editor("abc-phrase", {
-      paper_id: "paper-phrase",
+      canvas_id: "paper-phrase",
       generate_midi: true,
       midi_id: "midi-phrase",
       midi_download_id: "midi-download-phrase",
       abcjsParams: {
-        staffwidth: 700,
         generateDownload: true,
         midiListener: this.listener,
         animate: {
@@ -127,12 +119,11 @@ export default {
       // console.log(document.getElementById("abc-phrase").value);
 
       new abcjs.Editor("abc-phrase", {
-        paper_id: "paper-phrase",
+        canvas_id: "paper-phrase",
         generate_midi: true,
         midi_id: "midi-phrase",
         midi_download_id: "midi-download-phrase",
         abcjsParams: {
-          staffwidth: 700,
           generateDownload: true,
           midiListener: this.listener,
           animate: {
@@ -179,12 +170,11 @@ export default {
     clear_phrase() {
       document.getElementById("abc-phrase").value = this.tune;
       new abcjs.Editor("abc-phrase", {
-        paper_id: "paper-phrase",
+        canvas_id: "paper-phrase",
         generate_midi: true,
         midi_id: "midi-phrase",
         midi_download_id: "midi-download-phrase",
         abcjsParams: {
-          staffwidth: 700,
           generateDownload: true,
           midiListener: this.listener,
           animate: {
@@ -196,12 +186,11 @@ export default {
     async regist_phrase() {
       await this.concatenation();
       new abcjs.Editor("abc-creation", {
-        paper_id: "paper-creation",
+        canvas_id: "paper-creation",
         generate_midi: true,
         midi_id: "midi-creation",
         midi_download_id: "midi-download-creation",
         abcjsParams: {
-          staffwidth: 700,
           generateDownload: true,
           midiListener: this.listener,
           animate: {
@@ -214,12 +203,11 @@ export default {
     clear_creation() {
       document.getElementById("abc-creation").value = "";
       new abcjs.Editor("abc-creation", {
-        paper_id: "paper-creation",
+        canvas_id: "paper-creation",
         generate_midi: true,
         midi_id: "midi-creation",
         midi_download_id: "midi-download-creation",
         abcjsParams: {
-          staffwidth: 700,
           generateDownload: true,
           midiListener: this.listener,
           animate: {
@@ -269,21 +257,22 @@ export default {
   text-align: left;
 }
 #abc-source {
+  width: 460px;
+  height: 160px;
   padding: 6px;
   display: none;
 }
 #abc-phrase {
+  width: 460px;
+  height: 160px;
   padding: 6px;
   display: none;
 }
 #abc-creation {
+  width: 460px;
+  height: 160px;
   padding: 6px;
   display: none;
-}
-#container {
-  width: 1000px;
-  height: auto;
-  overflow: auto;
 }
 
 .listener-output {
@@ -311,15 +300,7 @@ pre {
 }
 
 #midi {
-  width: 500px;
-}
-
-#midi-phrase {
-  width: 500px;
-}
-
-#midi-creation {
-  width: 500px;
+  width: 756px;
 }
 
 .label {
