@@ -3,33 +3,44 @@
     <textarea id="abc-source"></textarea>
     <textarea id="abc-phrase" v-model="tune"></textarea>
     <textarea id="abc-creation"></textarea>
-    <div class="listener-output">
-      <div class="label">Currently Playing: <span class="abc-string">{{currentAbcFragment}}</span></div>
+    
+    <div id="play-info">
+      <div class="listener-output">
+        <div class="label">Currently Playing: <span class="abc-string">{{currentAbcFragment}}</span></div>
+        <div class="label">Parameters sent to listener callback: </div>
+        <div>Progress: {{progress.progress }}</div>
+        <div>Current Time: {{progress.currentTime }}</div>
+        <div>Total Duration: {{progress.duration }}</div>
+        <div>New Beat? {{progress.newBeat }}</div>
+      </div>
+    </div>
+    
+    <div id="refer-abc">
+      <div id="midi"></div>
+      <div id="midi-download"></div>
+      <div class="container">
+        <div id="paper"></div>
+      </div>
+    </div>
 
-      <div class="label">Parameters sent to listener callback: </div>
-      <div>Progress: {{progress.progress }}</div>
-      <div>Current Time: {{progress.currentTime }}</div>
-      <div>Total Duration: {{progress.duration }}</div>
-      <div>New Beat? {{progress.newBeat }}</div>
+    <div id=editing>
+      <div id="midi-phrase"></div>
+      <div id="midi-download-phrase"></div>
+      <div class="container">
+        <div id="paper-phrase"></div>
+      </div>
+      <button v-on:click="clear_phrase"> clear </button>
+      <button v-on:click="regist_phrase"> add </button>
     </div>
-    <div id="midi"></div>
-    <div id="midi-download"></div>
-    <div id="container">
-    <div id="paper"></div>
+
+    <div id="creatation">
+      <div id="midi-creation"></div>
+      <div id="midi-download-creation"></div>
+      <div class="container">
+        <div id="paper-creation"></div>
+      </div>
+      <button v-on:click="clear_creation"> clear </button>
     </div>
-    <div id="midi-phrase"></div>
-    <div id="midi-download-phrase"></div>
-    <div id="container">
-    <div id="paper-phrase"></div>
-    </div>
-    <button v-on:click="clear_phrase"> clear </button>
-    <button v-on:click="regist_phrase"> add </button>
-    <div id="midi-creation"></div>
-    <div id="midi-download-creation"></div>
-    <div id="container">
-    <div id="paper-creation"></div>
-    </div>
-    <button v-on:click="clear_creation"> clear </button>
   </div>
 </template>
 
@@ -41,7 +52,7 @@ import abcjs from "abcjs/midi";
 export default {
   mounted: async function() {
     let abcdata = "";
-    await fetch("./static/abc/msc-10.abc")
+    await fetch("./static/abc/msc-142.abc")
       .then(response => {
         return response.text();
       })
@@ -107,6 +118,7 @@ export default {
       this.colorRange(currentRange, "#3D9AFC"); // Set the currently sounding note to blue.
     },
     async selectionCallback(abcelem) {
+      console.log(abcelem);
       var note = {};
       for (var key in abcelem) {
         if (abcelem.hasOwnProperty(key) && key !== "abselem") {
@@ -132,7 +144,7 @@ export default {
         midi_id: "midi-phrase",
         midi_download_id: "midi-download-phrase",
         abcjsParams: {
-          staffwidth: 700,
+          staffwidth: 500,
           generateDownload: true,
           midiListener: this.listener,
           animate: {
@@ -280,10 +292,12 @@ export default {
   padding: 6px;
   display: none;
 }
-#container {
+.container {
+  border: solid 1px #000000;
   width: 1000px;
-  height: auto;
+  height: 300px;
   overflow: auto;
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
 }
 
 .listener-output {
@@ -303,13 +317,6 @@ export default {
   background: #fbf4b8;
 }
 
-pre {
-  border: 1px solid #888888;
-  padding: 6px;
-  border-radius: 4px;
-  width: 460px;
-}
-
 #midi {
   width: 500px;
 }
@@ -320,6 +327,10 @@ pre {
 
 #midi-creation {
   width: 500px;
+}
+
+#play-info {
+  display: none;
 }
 
 .label {
