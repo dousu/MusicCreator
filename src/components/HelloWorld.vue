@@ -30,6 +30,10 @@
     </div>
 
     <div id=editing>
+      <div class="note">
+        <p id="editing-alert">
+        </p>
+      </div>
       <div class="container">
         <div id="paper-phrase"></div>
       </div>
@@ -43,7 +47,7 @@
       <div id="midi-download-phrase"></div>
     </div>
 
-    <div id="creatation">
+    <div id="creation">
       <div class="container">
         <div id="paper-creation"></div>
       </div>
@@ -74,31 +78,22 @@ export default {
         this.allrefdata = jsondata;
       });
     this.abcdata = this.allrefdata[this.refloc];
-
-    document.getElementById("abc-phrase").value = this.tune;
-    new abcjs.Editor("abc-phrase", {
-      paper_id: "paper-phrase",
-      generate_midi: true,
-      midi_id: "midi-phrase",
-      midi_download_id: "midi-download-phrase",
-      abcjsParams: {
-        generateDownload: true,
-        midiListener: this.listener,
-        animate: {
-          listener: this.animate
-        }
-      }
-    });
+    this.editingdata = this.tune;
   },
   name: "hello",
   data() {
     return {
       abcdata: "",
+      editingdata: "",
+      creationdata: "",
       progress: {},
       currentAbcFragment: "(none)",
-      tune: "X:1\nT: Editing Phrase\nM: 4/4\nL: 1/8\nQ: 100\nK: C\n",
+      tune: "X:1\nT:Editing Phrase\nM:4/4\nL:1/8\nQ:100\nK:C\n",
       allrefdata: [],
-      refloc: 0
+      refloc: 0,
+      old_creation: [],
+      lastelem: "",
+      lastscore: ""
     };
   },
   watch: {
@@ -118,11 +113,42 @@ export default {
           }
         }
       });
+    },
+    editingdata() {
+      document.getElementById("abc-phrase").value = this.editingdata;
+      new abcjs.Editor("abc-phrase", {
+        paper_id: "paper-phrase",
+        generate_midi: true,
+        midi_id: "midi-phrase",
+        midi_download_id: "midi-download-phrase",
+        abcjsParams: {
+          generateDownload: true,
+          midiListener: this.listener,
+          animate: {
+            listener: this.animate
+          }
+        }
+      });
+    },
+    creationdata() {
+      document.getElementById("abc-creation").value = this.creationdata;
+      new abcjs.Editor("abc-creation", {
+        paper_id: "paper-creation",
+        generate_midi: true,
+        midi_id: "midi-creation",
+        midi_download_id: "midi-download-creation",
+        abcjsParams: {
+          generateDownload: true,
+          midiListener: this.listener,
+          animate: {
+            listener: this.animate
+          }
+        }
+      });
     }
   },
   methods: {
     listener(midiControl, progress) {
-      // This provides a more linear view of the progress, for a progress bar or for an unrelated animation.
       this.progress = progress;
     },
     colorRange(range, color) {
@@ -140,39 +166,34 @@ export default {
       this.colorRange(currentRange, "#3D9AFC"); // Set the currently sounding note to blue.
     },
     async selectionCallback(abcelem) {
-      console.log(abcelem);
       var note = {};
       for (var key in abcelem) {
         if (abcelem.hasOwnProperty(key) && key !== "abselem") {
           note[key] = abcelem[key];
         }
       }
-      const data = document.getElementById("abc-source").value;
-      const targ_data = data.slice(abcelem.startChar, abcelem.endChar);
-      const targ_info = await this.get_info(data, abcelem.startChar);
-      // console.log(targ_info);
+      const val = await this.elemContinuty(abcelem);
+      // console.log(val);
 
-      const phrase_data = document.getElementById("abc-phrase").value;
-      const phrase_info = await this.get_info(phrase_data, phrase_data.length);
-      // console.log(phrase_info);
+      if (val > 0) {
+        console.log(val);
+        const data = document.getElementById("abc-source").value;
+        const targ_data = data.slice(abcelem.startChar, abcelem.endChar);
+        const targ_info = await this.get_info(data, abcelem.startChar);
 
-      await this.phrase_set_info(targ_info, phrase_info);
-      document.getElementById("abc-phrase").value += targ_data;
-      // console.log(document.getElementById("abc-phrase").value);
+        const phrase_data = document.getElementById("abc-phrase").value;
+        const phrase_info = await this.get_info(
+          phrase_data,
+          phrase_data.length
+        );
 
-      new abcjs.Editor("abc-phrase", {
-        paper_id: "paper-phrase",
-        generate_midi: true,
-        midi_id: "midi-phrase",
-        midi_download_id: "midi-download-phrase",
-        abcjsParams: {
-          generateDownload: true,
-          midiListener: this.listener,
-          animate: {
-            listener: this.animate
-          }
-        }
-      });
+        await this.phrase_set_info(targ_info, phrase_info);
+        this.editingdata =
+          document.getElementById("abc-phrase").value + targ_data;
+        document.getElementById("editing-alert").innerHTML = "<em>Success</em>";
+      } else {
+        document.getElementById("editing-alert").innerHTML = "Failed";
+      }
     },
     get_info(abcdata, start) {
       function setting(d) {
@@ -212,55 +233,20 @@ export default {
       }
     },
     clear_phrase() {
-      document.getElementById("abc-phrase").value = this.tune;
-      new abcjs.Editor("abc-phrase", {
-        paper_id: "paper-phrase",
-        generate_midi: true,
-        midi_id: "midi-phrase",
-        midi_download_id: "midi-download-phrase",
-        abcjsParams: {
-          generateDownload: true,
-          midiListener: this.listener,
-          animate: {
-            listener: this.animate
-          }
-        }
-      });
+      this.editingdata = this.tune;
     },
     async regist_phrase() {
+      this.old_creation.push(this.creationdata);
       await this.concatenation();
-      new abcjs.Editor("abc-creation", {
-        paper_id: "paper-creation",
-        generate_midi: true,
-        midi_id: "midi-creation",
-        midi_download_id: "midi-download-creation",
-        abcjsParams: {
-          generateDownload: true,
-          midiListener: this.listener,
-          animate: {
-            listener: this.animate
-          }
-        }
-      });
       this.clear_phrase();
     },
     clear_creation() {
-      document.getElementById("abc-creation").value = "";
-      new abcjs.Editor("abc-creation", {
-        paper_id: "paper-creation",
-        generate_midi: true,
-        midi_id: "midi-creation",
-        midi_download_id: "midi-download-creation",
-        abcjsParams: {
-          generateDownload: true,
-          midiListener: this.listener,
-          animate: {
-            listener: this.animate
-          }
-        }
-      });
+      this.editingdata = "";
     },
-    undo_creation() {},
+    undo_creation() {
+      this.creationdata = this.old_creation.pop();
+      this.old_creation = "";
+    },
     async concatenation() {
       const phrase_data = document.getElementById("abc-phrase").value;
       const creation_data = document.getElementById("abc-creation").value;
@@ -272,13 +258,6 @@ export default {
         creation_data,
         creation_data.length
       );
-      console.log(creation_data);
-      console.log(
-        creation_data.lastIndexOf(creation_info.get("K")) +
-          creation_info.get("K").length +
-          1
-      );
-      console.log(creation_data.length);
       if (
         creation_data === "" ||
         creation_data.lastIndexOf(creation_info.get("K")) +
@@ -286,17 +265,19 @@ export default {
           1 ===
           creation_data.length
       ) {
-        document.getElementById("abc-creation").value = phrase_data.replace(
+        this.creationdata = phrase_data.replace(
           phrase_info.get("T"),
-          "T: Music"
+          "T:Music"
         );
       } else {
         await this.creation_set_info(phrase_info, creation_info);
-        document.getElementById("abc-creation").value += phrase_data.slice(
-          phrase_data.indexOf(phrase_info.get("K")) +
-            phrase_info.get("K").length +
-            1
-        );
+        this.creationdata =
+          document.getElementById("abc-creation").value +
+          phrase_data.slice(
+            phrase_data.indexOf(phrase_info.get("K")) +
+              phrase_info.get("K").length +
+              1
+          );
       }
     },
     creation_set_info(targ, dest) {
@@ -321,6 +302,36 @@ export default {
         this.refloc++;
       }
       this.abcdata = this.allrefdata[this.refloc];
+    },
+    async elemContinuty(elem) {
+      const func = () => {
+        console.log(this.abcdata);
+        console.log(this.lastelem);
+        console.log(elem.startChar);
+        const str = document
+          .getElementById("abc-source")
+          .value.slice(this.lastelem, elem.startChar);
+        console.log(str);
+        return str.search(/[\w+\s]/);
+      };
+      if (
+        this.lastelem !== "" &&
+        (this.lastscore !== this.refloc || this.lastelem > elem.startChar)
+      ) {
+        return -1;
+      } else if (this.lastelem !== "") {
+        let res = await func();
+        if (res === -1) {
+          this.lastelem = elem.endChar;
+          this.lastscore = this.refloc;
+        }
+        if (res === 0) res++;
+        return res * -1;
+      } else {
+        this.lastelem = elem.endChar;
+        this.lastscore = this.refloc;
+        return 1;
+      }
     }
   }
 };
@@ -399,12 +410,22 @@ export default {
 }
 
 #creation {
-  margin: 20px;
+  margin: 30px;
 }
 #editing {
-  margin: 10px;
+  margin: 30px;
 }
-#abc-ref {
-  margin: 20px;
+#refer-abc {
+  margin: 30px;
+}
+
+.note {
+  border: 1px solid #e9ef96;
+  height: 100px;
+  width: 400px;
+  color: red;
+  background-color: #fbf4b8;
+  margin: 3px;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
 }
 </style>
