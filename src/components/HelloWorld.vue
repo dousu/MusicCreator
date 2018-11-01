@@ -3,6 +3,24 @@
     <textarea id="abc-source"></textarea>
     <textarea id="abc-phrase"></textarea>
     <textarea id="abc-creation"></textarea>
+    <audio id="sound-file-click" preload="auto">
+	    <source src="static/sound/click/nc112322.wav" type="audio/wav">
+    </audio>
+    <audio id="sound-file-clear" preload="auto">
+	    <source src="static/sound/clear/nc78407.mp3" type="audio/mp3">
+    </audio>
+    <audio id="sound-file-add" preload="auto">
+	    <source src="static/sound/add/nc44409.mp3" type="audio/mp3">
+    </audio>
+    <audio id="sound-file-undo" preload="auto">
+	    <source src="static/sound/undo/nc78408.mp3" type="audio/mp3">
+    </audio>
+    <audio id="sound-file-button" preload="auto">
+	    <source src="static/sound/button/nc167288.mp3" type="audio/mp3">
+    </audio>
+    <audio id="sound-file-failed" preload="auto">
+	    <source src="static/sound/failed/nc45878.mp3" type="audio/mp3">
+    </audio>
     
     <div id="play-info">
       <div class="listener-output">
@@ -48,7 +66,7 @@
     </div>
 
     <div id="creation">
-      <div class="container">
+      <div class="music">
         <div id="paper-creation"></div>
       </div>
       <button v-on:click="clear_creation" class="modifier">
@@ -101,6 +119,7 @@ export default {
       document.getElementById("abc-source").value = this.abcdata;
       new abcjs.Editor("abc-source", {
         paper_id: "paper",
+        staffwidth: 740,
         generate_midi: true,
         midi_id: "midi",
         midi_download_id: "midi-download",
@@ -118,6 +137,7 @@ export default {
       document.getElementById("abc-phrase").value = this.editingdata;
       new abcjs.Editor("abc-phrase", {
         paper_id: "paper-phrase",
+        staffwidth: 740,
         generate_midi: true,
         midi_id: "midi-phrase",
         midi_download_id: "midi-download-phrase",
@@ -134,6 +154,7 @@ export default {
       document.getElementById("abc-creation").value = this.creationdata;
       new abcjs.Editor("abc-creation", {
         paper_id: "paper-creation",
+        staffwidth: 740,
         generate_midi: true,
         midi_id: "midi-creation",
         midi_download_id: "midi-download-creation",
@@ -166,16 +187,17 @@ export default {
       this.colorRange(currentRange, "#3D9AFC"); // Set the currently sounding note to blue.
     },
     async selectionCallback(abcelem) {
-      var note = {};
-      for (var key in abcelem) {
-        if (abcelem.hasOwnProperty(key) && key !== "abselem") {
-          note[key] = abcelem[key];
-        }
-      }
+      // var note = {};
+      // for (var key in abcelem) {
+      //   if (abcelem.hasOwnProperty(key) && key !== "abselem") {
+      //     note[key] = abcelem[key];
+      //   }
+      // }
       const val = await this.elemContinuty(abcelem);
       // console.log(val);
 
       if (val > 0) {
+        this.soundClick();
         console.log(val);
         const data = document.getElementById("abc-source").value;
         const targ_data = data.slice(abcelem.startChar, abcelem.endChar);
@@ -192,6 +214,7 @@ export default {
           document.getElementById("abc-phrase").value + targ_data;
         document.getElementById("editing-alert").innerHTML = "<em>Success</em>";
       } else {
+        this.soundFailed();
         document.getElementById("editing-alert").innerHTML = "Failed";
       }
     },
@@ -233,19 +256,27 @@ export default {
       }
     },
     clear_phrase() {
+      this.soundClear();
       this.editingdata = this.tune;
+      this.lastelem = "";
+      this.lastscore = "";
     },
     async regist_phrase() {
-      this.old_creation.push(this.creationdata);
-      await this.concatenation();
-      this.clear_phrase();
+      this.soundAdd();
+      if (document.getElementById("abc-phrase").value !== this.tune) {
+        this.old_creation.push(this.creationdata);
+        await this.concatenation();
+        this.clear_phrase();
+      }
     },
     clear_creation() {
+      this.soundClear();
       this.editingdata = "";
     },
     undo_creation() {
-      this.creationdata = this.old_creation.pop();
-      this.old_creation = "";
+      this.soundUndo();
+      if (this.old_creation.length > 0)
+        this.creationdata = this.old_creation.pop();
     },
     async concatenation() {
       const phrase_data = document.getElementById("abc-phrase").value;
@@ -288,6 +319,7 @@ export default {
       }
     },
     leftbutton() {
+      this.soundButton();
       if (this.refloc === 0) {
         this.refloc = this.allrefdata.length - 1;
       } else {
@@ -296,6 +328,7 @@ export default {
       this.abcdata = this.allrefdata[this.refloc];
     },
     rightbutton() {
+      this.soundButton();
       if (this.refloc === this.allrefdata.length - 1) {
         this.refloc = 0;
       } else {
@@ -312,7 +345,8 @@ export default {
           .getElementById("abc-source")
           .value.slice(this.lastelem, elem.startChar);
         console.log(str);
-        return str.search(/[\w+\s]/);
+        console.log(str.slice(str.search("]") + 1, str.length));
+        return str.search(/([A-Za-z])/);
       };
       if (
         this.lastelem !== "" &&
@@ -332,6 +366,48 @@ export default {
         this.lastscore = this.refloc;
         return 1;
       }
+    },
+    soundClick() {
+      const id = "sound-file-click";
+      if (typeof document.getElementById(id).currentTime != "undefined") {
+        document.getElementById(id).currentTime = 0;
+      }
+      document.getElementById(id).play();
+    },
+    soundClear() {
+      const id = "sound-file-clear";
+      if (typeof document.getElementById(id).currentTime != "undefined") {
+        document.getElementById(id).currentTime = 0;
+      }
+      document.getElementById(id).play();
+    },
+    soundAdd() {
+      const id = "sound-file-add";
+      if (typeof document.getElementById(id).currentTime != "undefined") {
+        document.getElementById(id).currentTime = 0;
+      }
+      document.getElementById(id).play();
+    },
+    soundUndo() {
+      const id = "sound-file-undo";
+      if (typeof document.getElementById(id).currentTime != "undefined") {
+        document.getElementById(id).currentTime = 0;
+      }
+      document.getElementById(id).play();
+    },
+    soundButton() {
+      const id = "sound-file-button";
+      if (typeof document.getElementById(id).currentTime != "undefined") {
+        document.getElementById(id).currentTime = 0;
+      }
+      document.getElementById(id).play();
+    },
+    soundFailed() {
+      const id = "sound-file-failed";
+      if (typeof document.getElementById(id).currentTime != "undefined") {
+        document.getElementById(id).currentTime = 0;
+      }
+      document.getElementById(id).play();
     }
   }
 };
@@ -357,6 +433,13 @@ export default {
 .container {
   border: solid 1px #000000;
   width: 900px;
+  height: 300px;
+  overflow: auto;
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
+}
+.music {
+  border: solid 1px #000000;
+  width: 1200px;
   height: 300px;
   overflow: auto;
   box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
