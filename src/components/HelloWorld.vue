@@ -46,20 +46,27 @@
     </div>
     
     <div id="refer-abc">
-      <div class="container">
-        <div id="paper"></div>
-      </div>
-      <button v-on:click="leftbutton" class="direction">
+      <strong>
+        Score Viewer
+      </strong>
+      <br>
+      <button v-on:click="leftbutton" class="direction" style="margin-left: 0px;">
         <font-awesome-icon icon="chevron-left" />
       </button>
       <button v-on:click="rightbutton" class="direction">
         <font-awesome-icon icon="chevron-right" />
       </button>
+      <div class="container">
+        <div id="paper"></div>
+      </div>
       <div id="midi"></div>
       <div id="midi-download"></div>
     </div>
 
     <div id=editing>
+      <strong>
+        Phrase Editor
+      </strong>
       <div class="note">
         <p id="editing-alert">
         </p>
@@ -78,6 +85,9 @@
     </div>
 
     <div id="creation">
+      <strong>
+        Music
+      </strong>
       <div class="music">
         <div id="paper-creation"></div>
       </div>
@@ -490,8 +500,8 @@ export default {
 }
 
 .direction {
-  height: 50px;
-  width: 50px;
+  height: 30px;
+  width: 70px;
 }
 
 .modifier {
