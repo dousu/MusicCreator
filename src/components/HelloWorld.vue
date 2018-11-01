@@ -363,7 +363,7 @@ export default {
           .value.slice(this.lastelem, elem.startChar);
         console.log(str);
         console.log(str.slice(str.search("]") + 1, str.length));
-        return str.search(/([A-Za-z])/);
+        return str.slice(str.search("]") + 1, str.length).search(/([A-Za-z])/);
       };
       if (
         this.lastelem !== "" &&
