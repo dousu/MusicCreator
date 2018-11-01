@@ -21,6 +21,18 @@
     <audio id="sound-file-failed" preload="auto">
 	    <source src="static/sound/failed/nc45878.mp3" type="audio/mp3">
     </audio>
+
+    <p>
+      <big>
+        <font size="+5">
+          <strong>
+            Music Creator
+          </strong>
+        </font>
+        <br> Please select consecutive notes on scores to make a new score.
+        <br> Push "Add" button to add "Phrase Editor" to your "Music". 
+      </big>
+    </p>
     
     <div id="play-info">
       <div class="listener-output">
@@ -106,7 +118,7 @@ export default {
       creationdata: "",
       progress: {},
       currentAbcFragment: "(none)",
-      tune: "X:1\nT:Editing Phrase\nM:4/4\nL:1/8\nQ:100\nK:C\n",
+      tune: "X:1\nT:Phrase Editor\nM:4/4\nL:1/8\nQ:100\nK:C\n",
       allrefdata: [],
       refloc: 0,
       old_creation: [],
@@ -187,12 +199,6 @@ export default {
       this.colorRange(currentRange, "#3D9AFC"); // Set the currently sounding note to blue.
     },
     async selectionCallback(abcelem) {
-      // var note = {};
-      // for (var key in abcelem) {
-      //   if (abcelem.hasOwnProperty(key) && key !== "abselem") {
-      //     note[key] = abcelem[key];
-      //   }
-      // }
       const val = await this.elemContinuty(abcelem);
       // console.log(val);
 
@@ -215,7 +221,8 @@ export default {
         document.getElementById("editing-alert").innerHTML = "<em>Success</em>";
       } else {
         this.soundFailed();
-        document.getElementById("editing-alert").innerHTML = "Failed";
+        document.getElementById("editing-alert").innerHTML =
+          "Failed<br>Please select a consecutive note.";
       }
     },
     get_info(abcdata, start) {
