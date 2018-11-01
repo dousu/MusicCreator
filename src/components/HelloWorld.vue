@@ -288,7 +288,7 @@ export default {
     },
     clear_creation() {
       this.soundClear();
-      this.editingdata = "";
+      this.creationdata = "";
     },
     undo_creation() {
       this.soundUndo();
