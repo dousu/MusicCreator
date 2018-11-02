@@ -2,6 +2,8 @@
 
 > A Vue.js project
 
+https://dousu.github.io/MusicCreator/
+
 ## Build Setup
 
 ``` bash
