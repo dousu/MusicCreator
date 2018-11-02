@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="musiccreater">
     <textarea id="abc-source"></textarea>
     <textarea id="abc-phrase"></textarea>
     <textarea id="abc-creation"></textarea>
@@ -22,16 +22,12 @@
 	    <source src="static/sound/failed/nc45878.mp3" type="audio/mp3">
     </audio>
 
-    <p>
-      <big>
-        <font size="+5">
-          <strong>
-            Music Creator
-          </strong>
-        </font>
-        <br> Please select consecutive notes on scores to make a new score.
-        <br> Push "Add" button to add "Phrase Editor" to your "Music". 
-      </big>
+    <h1 class="text-center">
+      Music Creator
+    </h1>
+    <p class="text-center h3">
+      <br> Please select consecutive notes on scores to make a new score.
+      <br> Push "Add" button to add "Phrase Editor" to your "Music". 
     </p>
     
     <div id="play-info">
@@ -45,60 +41,62 @@
       </div>
     </div>
     
-    <div id="refer-abc">
-      <strong>
+    <div id="refer-abc" class="text-center">
+      <h4 class="text-left">
         Score Viewer
-      </strong>
-      <br>
-      <button v-on:click="leftbutton" class="direction" style="margin-left: 0px;">
-        <font-awesome-icon icon="chevron-left" />
-      </button>
-      <button v-on:click="rightbutton" class="direction">
-        <font-awesome-icon icon="chevron-right" />
-      </button>
-      <div class="container">
+      </h4>
+      <div class="text-left">
+        <button v-on:click="leftbutton" class="direction">
+          <font-awesome-icon icon="chevron-left" />
+        </button>
+        <button v-on:click="rightbutton" class="direction">
+          <font-awesome-icon icon="chevron-right" />
+        </button>
+      </div>
+      <div class="scorecontainer">
         <div id="paper"></div>
       </div>
       <div id="midi"></div>
-      <div id="midi-download"></div>
+      <div id="midi-download" class="text-left"></div>
     </div>
 
-    <div id=editing>
-      <strong>
+    <div id=editing class="text-center">
+      <h4 class="text-left">
         Phrase Editor
-      </strong>
-      <div class="note">
-        <p id="editing-alert">
-        </p>
+      </h4>
+      <div class="text-left">
+        <button v-on:click="clear_phrase" class="modifier">
+          <font-awesome-icon icon="minus" /> clear
+        </button>
+        <button v-on:click="regist_phrase" class="modifier">
+          <font-awesome-icon icon="plus" /> add
+        </button>
+        <div class="note" id="editing-alert"></div>
       </div>
-      <div class="container">
+      <div class="scorecontainer">
         <div id="paper-phrase"></div>
       </div>
-      <button v-on:click="clear_phrase" class="modifier">
-        <font-awesome-icon icon="minus" /> clear
-      </button>
-      <button v-on:click="regist_phrase" class="modifier">
-        <font-awesome-icon icon="plus" /> add
-      </button>
       <div id="midi-phrase"></div>
-      <div id="midi-download-phrase"></div>
+      <div id="midi-download-phrase" class="text-left"></div>
     </div>
 
-    <div id="creation">
-      <strong>
+    <div id="creation" class="text-center">
+      <h4 class="text-left">
         Music
-      </strong>
+      </h4>
+      <div class="text-left">
+        <button v-on:click="clear_creation" class="modifier">
+          <font-awesome-icon icon="minus" /> clear
+        </button>
+        <button v-on:click="undo_creation" class="modifier">
+          <font-awesome-icon icon="undo" /> undo
+        </button>
+      </div>
       <div class="music">
         <div id="paper-creation"></div>
       </div>
-      <button v-on:click="clear_creation" class="modifier">
-        <font-awesome-icon icon="minus" /> clear
-      </button>
-      <button v-on:click="undo_creation" class="modifier">
-        <font-awesome-icon icon="undo" /> undo
-      </button>
       <div id="midi-creation"></div>
-      <div id="midi-download-creation"></div>
+      <div id="midi-download-creation" class="text-left"></div>
     </div>
   </div>
 </template>
@@ -447,8 +445,8 @@ export default {
   content: "▕◀" !important;
 }
 
-.hello {
-  text-align: left;
+.musiccreator {
+  /* text-align: left; */
 }
 #abc-source {
   padding: 6px;
@@ -462,17 +460,17 @@ export default {
   padding: 6px;
   display: none;
 }
-.container {
+.scorecontainer {
   border: solid 1px #000000;
-  width: 900px;
-  height: 300px;
+  width: 1100px;
+  height: 200px;
   overflow: auto;
   box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
 }
 .music {
   border: solid 1px #000000;
-  width: 1200px;
-  height: 300px;
+  width: 1100px;
+  height: 200px;
   overflow: auto;
   box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
 }
@@ -515,12 +513,12 @@ export default {
 }
 
 .direction {
-  height: 30px;
+  height: 50px;
   width: 70px;
 }
 
 .modifier {
-  height: 20px;
+  height: 30px;
   width: 80px;
 }
 
@@ -536,7 +534,7 @@ export default {
 
 .note {
   border: 1px solid #e9ef96;
-  height: 100px;
+  height: 50px;
   width: 400px;
   color: red;
   background-color: #fbf4b8;
