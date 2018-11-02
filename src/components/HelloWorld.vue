@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import "font-awesome/css/font-awesome.min.css";
+// import "font-awesome/css/font-awesome.min.css";
 import "abcjs/abcjs-midi.css";
 import abcjs from "abcjs/midi";
 
@@ -431,7 +431,22 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
+.abcjs-midi-start.abcjs-btn.abcjs-pushed::before {
+  font-family: sans-serif !important;
+  content: "■" !important;
+}
+
+.abcjs-midi-start.abcjs-btn::before {
+  font-family: sans-serif !important;
+  content: "▶" !important;
+}
+
+.abcjs-midi-reset.abcjs-btn::before {
+  font-family: sans-serif !important;
+  content: "▕◀" !important;
+}
+
 .hello {
   text-align: left;
 }
