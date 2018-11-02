@@ -431,15 +431,20 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.abcjs-midi-start.abcjs-btn {
+<style>
+.abcjs-midi-start.abcjs-btn.abcjs-pushed::before {
   font-family: sans-serif !important;
   content: "■" !important;
 }
 
-.abcjs-midi-start.abcjs-btn {
+.abcjs-midi-start.abcjs-btn::before {
   font-family: sans-serif !important;
   content: "▶" !important;
+}
+
+.abcjs-midi-reset.abcjs-btn::before {
+  font-family: sans-serif !important;
+  content: "▕◀" !important;
 }
 
 .hello {
