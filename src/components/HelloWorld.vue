@@ -22,7 +22,7 @@
 	    <source src="static/sound/failed/nc45878.mp3" type="audio/mp3">
     </audio>
 
-    <h1 class="text-center">
+    <h1 class="text-center" style="font-weight: bolder;">
       Music Creator
     </h1>
     <p class="text-center h3">
