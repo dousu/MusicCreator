@@ -432,6 +432,16 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.abcjs-midi-start.abcjs-btn {
+  font-family: sans-serif !important;
+  content: "■" !important;
+}
+
+.abcjs-midi-start.abcjs-btn {
+  font-family: sans-serif !important;
+  content: "▶" !important;
+}
+
 .hello {
   text-align: left;
 }
