@@ -3,6 +3,7 @@
     <textarea id="abc-source"></textarea>
     <textarea id="abc-phrase"></textarea>
     <textarea id="abc-creation"></textarea>
+    <textarea id="workarea"></textarea>
     <audio id="sound-file-click" preload="auto">
 	    <source src="static/sound/click/nc112322.wav" type="audio/wav">
     </audio>
@@ -98,6 +99,11 @@
       <div id="midi-creation"></div>
       <div id="midi-download-creation" class="text-left"></div>
     </div>
+    <div>
+      <p>Components:</p>
+      <p id="component">
+      </p>
+    </div>
   </div>
 </template>
 
@@ -131,7 +137,11 @@ export default {
       refloc: 0,
       old_creation: [],
       lastelem: "",
-      lastscore: ""
+      lastscore: "",
+      const_info: [],
+      old_const: [],
+      editStart: NaN,
+      editEnd: NaN
     };
   },
   watch: {
@@ -186,6 +196,11 @@ export default {
           }
         }
       });
+    },
+    const_info() {
+      document.getElementById("component").innerHTML = JSON.stringify(
+        this.const_info
+      );
     }
   },
   methods: {
@@ -208,11 +223,10 @@ export default {
     },
     async selectionCallback(abcelem) {
       const val = await this.elemContinuty(abcelem);
-      // console.log(val);
 
       if (val > 0) {
         this.soundClick();
-        console.log(val);
+        this.editEnd = abcelem.endChar;
         const data = document.getElementById("abc-source").value;
         const targ_data = data.slice(abcelem.startChar, abcelem.endChar);
         const targ_info = await this.get_info(data, abcelem.startChar);
@@ -275,23 +289,33 @@ export default {
       this.editingdata = this.tune;
       this.lastelem = "";
       this.lastscore = "";
+      this.editStart = NaN;
+      this.editEnd = NaN;
     },
     async regist_phrase() {
-      this.soundAdd();
       if (document.getElementById("abc-phrase").value !== this.tune) {
+        this.soundAdd();
         this.old_creation.push(this.creationdata);
+        this.old_const.push(this.const_info);
         await this.concatenation();
         this.clear_phrase();
+        this.editStart = NaN;
+        this.editEnd = NaN;
+      } else {
+        this.soundFailed();
       }
     },
     clear_creation() {
       this.soundClear();
       this.creationdata = "";
+      this.const_info = [];
     },
     undo_creation() {
       this.soundUndo();
-      if (this.old_creation.length > 0)
+      if (this.old_creation.length > 0) {
         this.creationdata = this.old_creation.pop();
+        this.const_info = this.old_const.pop();
+      }
     },
     async concatenation() {
       const phrase_data = document.getElementById("abc-phrase").value;
@@ -325,6 +349,15 @@ export default {
               1
           );
       }
+      let cinfo = new Object();
+      cinfo.score = this.lastscore;
+      cinfo.start = this.editStart;
+      cinfo.end = this.editEnd;
+      document.getElementById("workarea").value = this.allrefdata[cinfo.score];
+      cinfo.str = document
+        .getElementById("workarea")
+        .value.slice(cinfo.start, cinfo.end);
+      this.const_info.push(cinfo);
     },
     creation_set_info(targ, dest) {
       for (const [key, val] of targ) {
@@ -353,14 +386,9 @@ export default {
     },
     async elemContinuty(elem) {
       const func = () => {
-        console.log(this.abcdata);
-        console.log(this.lastelem);
-        console.log(elem.startChar);
         const str = document
           .getElementById("abc-source")
           .value.slice(this.lastelem, elem.startChar);
-        console.log(str);
-        console.log(str.slice(str.search("]") + 1, str.length));
         return str.slice(str.search("]") + 1, str.length).search(/([A-Za-z])/);
       };
       if (
@@ -379,6 +407,7 @@ export default {
       } else {
         this.lastelem = elem.endChar;
         this.lastscore = this.refloc;
+        this.editStart = elem.startChar;
         return 1;
       }
     },
@@ -445,19 +474,16 @@ export default {
   content: "▕◀" !important;
 }
 
-.musiccreator {
-  /* text-align: left; */
-}
 #abc-source {
-  padding: 6px;
   display: none;
 }
 #abc-phrase {
-  padding: 6px;
   display: none;
 }
 #abc-creation {
-  padding: 6px;
+  display: none;
+}
+#workarea {
   display: none;
 }
 .scorecontainer {
