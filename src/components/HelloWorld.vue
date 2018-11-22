@@ -121,15 +121,15 @@ export default {
       .then(jsondata => {
         this.allrefdata = jsondata;
       });
-    let t = 0;
+    /*let t = 0;
     let m = 0;
     let loc = 0;
-    const number = this.allrefdata.length;
+    const number = this.allrefdata.length / 2;
     var rand = () => {
       return Math.floor( Math.random() * (number - t) );
     }
     while ( m < number && loc != number-1){
-      if(rand() >= n-m){
+      if(rand() >= number-m){
         t++;
         loc++;
       }else{
@@ -138,7 +138,16 @@ export default {
         m++;
         t++;
       }
+    }*/
+
+    this.refdata = this.allrefdata;
+    for(var i = this.refdata.length - 1; i >= 0; i--){
+      var rand = Math.floor(Math.random()*(i+1));
+      [this.refdata[i], this.refdata[rand]] = [this.refdata[rand], this.refdata[i]];
     }
+
+
+    console.log(this.refdata);
     this.abcdata = this.refdata[this.refloc];
     this.editingdata = this.tune;
   },
@@ -388,7 +397,7 @@ export default {
     leftbutton() {
       this.soundButton();
       if (this.refloc === 0) {
-        this.refloc = this.refdata.length - 1;
+        this.refloc = this.refdata.length / 2 - 1;
       } else {
         this.refloc--;
       }
@@ -396,7 +405,7 @@ export default {
     },
     rightbutton() {
       this.soundButton();
-      if (this.refloc === this.refdata.length - 1) {
+      if (this.refloc === this.refdata.length / 2 - 1) {
         this.refloc = 0;
       } else {
         this.refloc++;
