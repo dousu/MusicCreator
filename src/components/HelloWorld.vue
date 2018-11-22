@@ -121,7 +121,25 @@ export default {
       .then(jsondata => {
         this.allrefdata = jsondata;
       });
-    this.abcdata = this.allrefdata[this.refloc];
+    let t = 0;
+    let m = 0;
+    let loc = 0;
+    const number = this.allrefdata.length;
+    var rand = () => {
+      return Math.floor( Math.random() * (number - t) );
+    }
+    while ( m < number && loc != number-1){
+      if(rand() >= n-m){
+        t++;
+        loc++;
+      }else{
+        this.refdata.push(this.allrefdata[loc]);
+        loc++;
+        m++;
+        t++;
+      }
+    }
+    this.abcdata = this.refdata[this.refloc];
     this.editingdata = this.tune;
   },
   name: "hello",
@@ -134,6 +152,7 @@ export default {
       currentAbcFragment: "(none)",
       tune: "X:1\nT:Phrase Editor\nM:4/4\nL:1/8\nQ:100\nK:C\n",
       allrefdata: [],
+      refdata: [],
       refloc: 0,
       old_creation: [],
       lastelem: "",
@@ -353,7 +372,7 @@ export default {
       cinfo.score = this.lastscore;
       cinfo.start = this.editStart;
       cinfo.end = this.editEnd;
-      document.getElementById("workarea").value = this.allrefdata[cinfo.score];
+      document.getElementById("workarea").value = this.refdata[cinfo.score];
       cinfo.str = document
         .getElementById("workarea")
         .value.slice(cinfo.start, cinfo.end);
@@ -369,20 +388,20 @@ export default {
     leftbutton() {
       this.soundButton();
       if (this.refloc === 0) {
-        this.refloc = this.allrefdata.length - 1;
+        this.refloc = this.refdata.length - 1;
       } else {
         this.refloc--;
       }
-      this.abcdata = this.allrefdata[this.refloc];
+      this.abcdata = this.refdata[this.refloc];
     },
     rightbutton() {
       this.soundButton();
-      if (this.refloc === this.allrefdata.length - 1) {
+      if (this.refloc === this.refdata.length - 1) {
         this.refloc = 0;
       } else {
         this.refloc++;
       }
-      this.abcdata = this.allrefdata[this.refloc];
+      this.abcdata = this.refdata[this.refloc];
     },
     async elemContinuty(elem) {
       const func = () => {
