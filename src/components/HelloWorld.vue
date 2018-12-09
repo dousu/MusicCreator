@@ -4,57 +4,56 @@
     <textarea id="abc-phrase"></textarea>
     <textarea id="abc-creation"></textarea>
     <audio id="sound-file-click" preload="auto">
-	    <source src="static/sound/click/nc112322.wav" type="audio/wav">
+      <source src="static/sound/click/nc112322.wav" type="audio/wav">
     </audio>
     <audio id="sound-file-clear" preload="auto">
-	    <source src="static/sound/clear/nc78407.mp3" type="audio/mp3">
+      <source src="static/sound/clear/nc78407.mp3" type="audio/mp3">
     </audio>
     <audio id="sound-file-add" preload="auto">
-	    <source src="static/sound/add/nc44409.mp3" type="audio/mp3">
+      <source src="static/sound/add/nc44409.mp3" type="audio/mp3">
     </audio>
     <audio id="sound-file-undo" preload="auto">
-	    <source src="static/sound/undo/nc78408.mp3" type="audio/mp3">
+      <source src="static/sound/undo/nc78408.mp3" type="audio/mp3">
     </audio>
     <audio id="sound-file-button" preload="auto">
-	    <source src="static/sound/button/nc167288.mp3" type="audio/mp3">
+      <source src="static/sound/button/nc167288.mp3" type="audio/mp3">
     </audio>
     <audio id="sound-file-failed" preload="auto">
-	    <source src="static/sound/failed/nc45878.mp3" type="audio/mp3">
+      <source src="static/sound/failed/nc45878.mp3" type="audio/mp3">
     </audio>
 
     <p>
       <big>
-        <font size="+5">
-          <strong>
-            Music Creator
-          </strong>
+        <font size="5">
+          <strong>Music Creator</strong>
         </font>
-        <br> Please select consecutive notes on scores to make a new score.
-        <br> Push "Add" button to add "Phrase Editor" to your "Music". 
+        <br>Please select consecutive notes on scores to make a new score.
+        <br>Push "Add" button to add "Phrase Editor" to your "Music".
       </big>
     </p>
-    
+
     <div id="play-info">
       <div class="listener-output">
-        <div class="label">Currently Playing: <span class="abc-string">{{currentAbcFragment}}</span></div>
-        <div class="label">Parameters sent to listener callback: </div>
+        <div class="label">
+          Currently Playing:
+          <span class="abc-string">{{currentAbcFragment}}</span>
+        </div>
+        <div class="label">Parameters sent to listener callback:</div>
         <div>Progress: {{progress.progress }}</div>
         <div>Current Time: {{progress.currentTime }}</div>
         <div>Total Duration: {{progress.duration }}</div>
         <div>New Beat? {{progress.newBeat }}</div>
       </div>
     </div>
-    
+
     <div id="refer-abc">
-      <strong>
-        Score Viewer
-      </strong>
+      <strong>Score Viewer</strong>
       <br>
       <button v-on:click="leftbutton" class="direction" style="margin-left: 0px;">
-        <font-awesome-icon icon="chevron-left" />
+        <font-awesome-icon icon="chevron-left"/>
       </button>
       <button v-on:click="rightbutton" class="direction">
-        <font-awesome-icon icon="chevron-right" />
+        <font-awesome-icon icon="chevron-right"/>
       </button>
       <div class="container">
         <div id="paper"></div>
@@ -63,39 +62,34 @@
       <div id="midi-download"></div>
     </div>
 
-    <div id=editing>
-      <strong>
-        Phrase Editor
-      </strong>
+    <div id="editing">
+      <strong>Phrase Editor</strong>
       <div class="note">
-        <p id="editing-alert">
-        </p>
+        <p id="editing-alert"></p>
       </div>
       <div class="container">
         <div id="paper-phrase"></div>
       </div>
       <button v-on:click="clear_phrase" class="modifier">
-        <font-awesome-icon icon="minus" /> clear
+        <font-awesome-icon icon="minus"/>clear
       </button>
       <button v-on:click="regist_phrase" class="modifier">
-        <font-awesome-icon icon="plus" /> add
+        <font-awesome-icon icon="plus"/>add
       </button>
       <div id="midi-phrase"></div>
       <div id="midi-download-phrase"></div>
     </div>
 
     <div id="creation">
-      <strong>
-        Music
-      </strong>
+      <strong>Music</strong>
       <div class="music">
         <div id="paper-creation"></div>
       </div>
       <button v-on:click="clear_creation" class="modifier">
-        <font-awesome-icon icon="minus" /> clear
+        <font-awesome-icon icon="minus"/>clear
       </button>
       <button v-on:click="undo_creation" class="modifier">
-        <font-awesome-icon icon="undo" /> undo
+        <font-awesome-icon icon="undo"/>undo
       </button>
       <div id="midi-creation"></div>
       <div id="midi-download-creation"></div>
